@@ -161,12 +161,6 @@ Test:
 curl -X POST https://orangepi.plc-web.online/led/on
 ```
 
----
-Got it 👍 you don’t want to dump your entire `flaskserver.service` and `cloudflared.service` files into the README since they’re already in the repo, but you still want the docs to show people how to enable them after cloning.
-
-Here’s a cleaner **improved README.md section** for the auto-start services that matches your repo structure:
-
----
 
 ## 🚀 PART 2: Auto-Start Services on OrangePi
 
