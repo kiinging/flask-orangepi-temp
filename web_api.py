@@ -69,13 +69,14 @@ def mode_auto():
     return jsonify({"mode": data["mode"]}), 200
 
 
-# ---------------- Light & plc Status ------------
+# ---------------- Control Status ------------
 @app.route('/light_plc_status', methods=['GET'])
-def get_light_plc_status():
+def get_control_status():
     return jsonify({
         "light": data.get("light"),
         "plc": data.get("plc"),
-        "web": data.get("web")
+        "web": data.get("web"),
+        "mode": data.get("mode")
     })
 
 

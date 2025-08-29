@@ -29,6 +29,6 @@ data["mode"] = 0    # default mode at startup is manual
 
 # ---------------- Control Parameters ----------------
 data["web"] = 0  # Setpoint source: 0 → use HMI, 1 → use Web
-data["setpoint"] = 50.0
+data["setpoint"] = 30.0
 data["pid"] = {"kp": 1.0, "ti": 10.0, "td": 0.0}
 
