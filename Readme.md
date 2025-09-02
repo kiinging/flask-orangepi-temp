@@ -1,13 +1,47 @@
 # 📷 Orange Pi Zero 3 (1GB) — Flask + MAX31865 + Modbus
 
-This project turns an **Orange Pi Zero 3 (1GB)** running **Ubuntu Noble Server (24.04)** into a **control and monitoring hub** for a Siemens S7-1200 PLC.
+This project turns an **Orange Pi Zero 3 (1GB)** running **Ubuntu Noble Server (24.04)** into a **control and monitoring hub** for a Siemens S7-1200 PLC.  
+
+It combines three main components that work together through a shared memory store (`shared_data.py`):
+
+### 🔑 Core Files
+
+* **`web_api.py` (Flask REST API)**  
+  Exposes a simple HTTP API that the **Cloudflare Worker** calls.  
+  - Controls outputs (`/light/on`, `/plc/on`, `/mode/auto`, etc.)  
+  - Reads current states (`/control_status`, `/temp`, `/trend`)  
+  - Updates control parameters (setpoint, PID values, manual MV).  
+  → This is the **bridge between the web frontend and the Orange Pi**.
+
+* **`temp_reading.py` (Sensor Loop)**  
+  Continuously samples temperatures from:  
+  - **MAX31865** (RTD)  
+  - **MAX31855** (thermocouple)  
+  Stores readings in shared memory along with a **trend buffer** of PV/MV data for plotting.  
+  → This keeps live sensor data available for both the API and Modbus.
+
+* **`modbus_server.py` (Modbus TCP Bridge)**  
+  Runs a Modbus TCP server (port `1502`) so the **PLC can read/write data**.  
+  - Publishes temperature readings, setpoint, and control states via **Input Registers (IR)**  
+  - Accepts setpoints, MV values, and sensor selection via **Holding Registers (HR)**  
+  → This is the **bridge between the PLC and the Orange Pi**.
+
+---
+
+✅ With these three services:  
+- The **web app** (via Cloudflare Worker) can turn things ON/OFF, tune parameters, and visualize trends.  
+- The **PLC** can read live process values and write control commands over Modbus.  
+- The **Orange Pi** ties everything together, acting as both a **data concentrator** and a **control interface**.
+
+---
+
 
 ### 📂 Project Structure
 
 ```
 flask-orangepi-temp/
-├── temp_reading.py    ← Reads temps from MAX31865 & MAX31855
 ├── web_api.py         ← Flask API for LED control (via Cloudflare Worker)
+├── temp_reading.py    ← Reads temps from MAX31865 & MAX31855
 ├── modbus_server.py   ← Exposes shared data via Modbus TCP (for PLC/NJ301)
 ├── shared_data.py     ← Global variable store (temperatures, states, etc.)
 ├── run_all.sh         ← Startup script (launches all services)

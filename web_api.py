@@ -76,8 +76,7 @@ def get_control_status():
         "light": data.get("light"),
         "plc": data.get("plc"),
         "web": data.get("web"),
-        "mode": data.get("mode"),
-        
+        "mode": data.get("mode")
     })
 
 
@@ -116,7 +115,18 @@ def update_setpoint():
 
 @app.route('/setpoint_status', methods=['GET'])
 def get_setpoint():
-    return jsonify({"setpoint": data.get("setpoint", 50.0)})
+    return jsonify({"setpoint": data.get("setpoint", 0.0)})
+
+# ---------------- MV Manual Control ----------------
+@app.route('/mv_manual', methods=['POST'])
+def set_mv_manual():
+    body = request.get_json()
+    data["mv_manual"] = float(body["mv_manual"])
+    return jsonify({"mv_manual": data["mv_manual"]})
+
+@app.route('/mv_manual_status', methods=['GET'])
+def get_mv_manual_status():
+    return jsonify({"mv_manual": data.get("mv_manual", 0)})
 
 # ---------------- PID Control ----------------
 @app.route('/pid', methods=['POST'])

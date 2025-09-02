@@ -35,8 +35,9 @@ def update_modbus_registers():
         try:
             # Safely get values from shared memory
             tc = shared_data.data.get("thermo_temp", 0.0) or 0.0
-            setpoint = shared_data.data.get("setpoint", 0.0) or 0.0
+            setpoint = shared_data.data.get("setpoint", 0.0) or 0.0 #setpoint send to PLC during manual mode
             rtd = shared_data.data.get("rtd_temp", 0.0) or 0.0
+            mv_manual = shared_data.data.get("mv_manual", 0.0) or 0.0 #mv send to PLC during auto mode
 
             # Web PLC and Mode status
             web_status  = 1 if shared_data.data.get("web",  False) else 0
@@ -58,9 +59,14 @@ def update_modbus_registers():
             reg6 = mode_status
             reg7 = plc_status
             reg8 = web_status
+
+            packed_mv_manual = struct.pack(">f", mv_manual)
+            reg9, reg10 = struct.unpack(">HH", packed_mv_manual)
+
+
             
             # Update Modbus Input Registers (IR)
-            store.setValues(4, 0, [reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8])
+            store.setValues(4, 0, [reg0, reg1, reg2, reg3, reg4, reg5, reg6, reg7, reg8, reg9, reg10])
 
 
              # === Read Holding Registers (HRs) ===

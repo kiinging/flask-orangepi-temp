@@ -13,7 +13,8 @@ data["fault"] = False
 data["last_update"] = None
 
 # ---------------- Control & Process Vars ----------------
-data["mv"] = None              # Manipulated Variable (0–100% PWM)
+data["mv"] = None              # Manipulated Variable calculated by the PID (0–100% PWM)
+data["mv_manual"] = 0          # MV manually set by operator
 data["pv_source"] = "rtd"      # PV source: "rtd" or "thermo"
 data["sensor_select"] = 0      # 0 = thermo, 1 = rtd
 
